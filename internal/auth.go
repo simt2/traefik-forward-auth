@@ -143,6 +143,19 @@ func MakeCookie(r *http.Request, email string) *http.Cookie {
 	}
 }
 
+// ClearCookie clears the auth cookie
+func ClearCookie(r *http.Request) *http.Cookie {
+	return &http.Cookie{
+		Name:     config.CookieName,
+		Value:    "",
+		Path:     "/",
+		Domain:   cookieDomain(r),
+		HttpOnly: true,
+		Secure:   !config.InsecureCookie,
+		Expires:  time.Now().Local().Add(time.Hour * -1),
+	}
+}
+
 // Make a CSRF cookie (used during login only)
 func MakeCSRFCookie(r *http.Request, nonce string) *http.Cookie {
 	return &http.Cookie{
