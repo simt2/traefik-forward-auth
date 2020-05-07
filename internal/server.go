@@ -15,7 +15,6 @@ type Server struct {
 
 func NewServer() *Server {
 	s := &Server{}
-	s.buildRoutes()
 	return s
 }
 
@@ -70,6 +69,10 @@ func (s *Server) AuthHandler(providerName, rule string) http.HandlerFunc {
 	p, _ := config.GetConfiguredProvider(providerName)
 
 	return func(w http.ResponseWriter, r *http.Request) {
+		r.Method = r.Header.Get("X-Forwarded-Method")
+		r.Host = r.Header.Get("X-Forwarded-Host")
+		r.URL, _ = url.Parse(r.Header.Get("X-Forwarded-Uri"))
+
 		// Logging setup
 		logger := s.logger(r, rule, "Authenticating request")
 

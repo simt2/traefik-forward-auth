@@ -21,7 +21,8 @@ func main() {
 	server := internal.NewServer()
 
 	// Attach router to default server
-	http.HandleFunc("/", server.RootHandler)
+	http.HandleFunc("/", server.AuthHandler(config.DefaultProvider, "default"))
+	http.HandleFunc(config.Path, server.AuthCallbackHandler())
 
 	// Start
 	log.Debugf("Starting with options: %s", config)
